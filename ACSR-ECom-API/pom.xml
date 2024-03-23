@@ -14,7 +14,7 @@
 	<name>ACSR-ECom-API</name>
 	<description>ACSR-ECom-API</description>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
