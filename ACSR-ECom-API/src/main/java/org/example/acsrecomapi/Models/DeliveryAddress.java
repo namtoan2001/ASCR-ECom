@@ -7,14 +7,14 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Users {
+public class DeliveryAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
-    private String userName;
-    private String fullName;
-    private String passWord;
-    private String email;
+    private long deliveryAddressId;
+    private String address;
     private String numberPhone;
-    private boolean isActive;
+    private String receiverName;
+    @ManyToOne
+    @JoinColumn(name = "users", referencedColumnName = "userId")
+    private Users users;
 }
