@@ -1,16 +1,11 @@
-package org.example.acsrecomapi.Models;
+package org.example.acsrecomapi.DTO.User;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
-public class Users {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
+public class SignUpRequest {
     private String userName;
     private String fullName;
     private String passWord;
