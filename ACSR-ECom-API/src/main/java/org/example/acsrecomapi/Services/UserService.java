@@ -3,6 +3,7 @@ package org.example.acsrecomapi.Services;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.acsrecomapi.Common.ExceptionOutput;
 import org.example.acsrecomapi.DTO.JWT.GenerateJwtRequest;
 import org.example.acsrecomapi.DTO.User.SignInRequest;
 import org.example.acsrecomapi.DTO.User.SignUpRequest;
@@ -39,7 +40,10 @@ public class UserService implements IUserService {
     public boolean signUpUser(SignUpRequest request) throws Exception {
         Users checkInput = userRepository.findByUserNameAndNumberPhoneAndEmail(request.getUserName(), request.getNumberPhone(), request.getEmail());
         if(checkInput != null){
-            throw new Exception("invalid");
+            throw new Exception(ExceptionOutput.INVALID);
+        }
+        if(!request.getPassWord().equals(request.getConfirmPassword())){
+            throw new Exception(ExceptionOutput.WRONG_CONFIRM_PASSWORD);
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String passwordHash = passwordEncoder.encode(request.getPassWord());
@@ -49,7 +53,7 @@ public class UserService implements IUserService {
         signUp.setPassWord(passwordHash);
         signUp.setEmail(request.getEmail());
         signUp.setNumberPhone(request.getNumberPhone());
-        signUp.setActive(request.isActive());
+        signUp.setActive(true);
         userRepository.save(signUp);
         return true;
     }
@@ -59,11 +63,11 @@ public class UserService implements IUserService {
         return CompletableFuture.supplyAsync(() -> {
             Users user = userRepository.findByUserName(request.getUserName());
             if (user == null) {
-                throw new RuntimeException("Tên đăng nhập không tồn tại!");
+                throw new RuntimeException(ExceptionOutput.NOT_FOUND);
             }
             boolean isCorrect = new BCryptPasswordEncoder().matches(request.getPassword(), user.getPassWord());
             if (!isCorrect) {
-                throw new RuntimeException("Mật khẩu không hợp lệ!");
+                throw new RuntimeException(ExceptionOutput.WRONG_PASSWORD);
             }
             GenerateJwtRequest jwtRequest = new GenerateJwtRequest(
                     user.getUserId(),
